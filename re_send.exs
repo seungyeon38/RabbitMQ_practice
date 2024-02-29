@@ -11,7 +11,7 @@ AMQP.Queue.declare(channel, "hello")
 # RabbitMQ에서 message는 queue에 직접 보내질 수 없다. exchange를 통해서만 보내질 수 있다.
 # 여기서는 X
 
-AMQP.Basic.publish(channel, "", "hello", "Hello  World!")
+AMQP.Basic.publish(channel, "", "hello", "Hello  World!") # default exchange : routing_key로 명시된 이름을 가진 queue로(해당 queue가 존재한다면) 전달
 IO.puts " [x] Sent 'Hello World!'"
 
 # network buffer flush, RabbitMQ에 message가 실제로 잘 보내졌는지 -> close connection을 통해 할 수 있다.
