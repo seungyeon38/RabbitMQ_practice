@@ -8,6 +8,9 @@
 {:ok, connection} = AMQP.Connection.open(host: "dev.onespring.co.kr", username: "bhseong", password: "100hoon") # 다른 machine에 있는 broker와 연결
 {:ok, channel} = AMQP.Channel.open(connection)
 
+# AMQP.Queue.declare(channel, "task_queue")
+AMQP.Queue.declare(channel, "task_queue", durable: true)
+
 # 명령어를 통해서 임의의 message를 보낼 수 있도록 수정
 message =
   case System.argv do
@@ -15,5 +18,6 @@ message =
     words -> Enum.join(words, " ")
   end
 
-AMQP.Basic.publish(channel, "", "task_queue", message, persistent: true)
+AMQP.Basic.publish(channel, "", "task_queue", message, persistent: true) # message가 없어지지 않는 것을 완벽하게 보장하지는 않지만, 좀 더 보장한다.
+
 IO.puts " [x] Send '#{message}'"
