@@ -17,5 +17,14 @@
 {:ok, connection} = AMQP.Connection.open(host: "dev.onespring.co.kr", username: "bhseong", password: "100hoon") # 다른 machine에 있는 broker와 연결
 {:ok, channel} = AMQP.Channel.open(connection)
 
+message =
+  case System.argv do
+    []    -> "Hello World!"
+    words -> Enum.join(words, " ")
+  end
+
 AMQP.Exchange.declare(channel, "logs", :fanout) # fanout : 모든 message를 모든 queue에 broadcast
 AMQP.Basic.publish(channel, "logs", "", message)
+IO.puts " [x] Sent '#{message}'"
+
+AMQP.Connection.close(connection)
