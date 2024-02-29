@@ -12,9 +12,18 @@ AMQP.Queue.declare(channel, "hello")
 defmodule Receive do
   def wait_for_messages do
     receive do
-      {:baisc_deliver, payload, _meta} ->
+      {:basic_deliver, payload, _meta} ->
         IO.puts " [x] Received #{payload}"
         wait_for_messages()
     end
   end
 end
+
+# RabbitMQ에 특정 process가 hello queue에서 message를 받아야 한다는 것을 알림
+AMQP.Basic.consume(channel, "hello", nil, no_ack: true)
+
+# RabbitMQ가 어떤 queue를 가지고 있는지, 얼마나 많은 message들이 거기에 있는지
+# sudo rabbitmqctl list_queues
+
+IO.puts " [*] Waiting for messages. To exit press CTRL+C, CTRL+C"
+Receive.wait_for_messages() # data를 무한 recursion으로 기다리고 필요할 때마다 message를 보여줄 수 있게
