@@ -1,4 +1,5 @@
 # queue에 single message 보내는 프로그램
+# 이름이 있는 queue에 메세지 보내는 프로그램
 
 # RabbitMQ server와 연결
 {:ok, connection} = AMQP.Connection.open(host: "dev.onespring.co.kr", username: "bhseong", password: "100hoon") # 다른 machine에 있는 broker와 연결
