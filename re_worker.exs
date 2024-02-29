@@ -24,9 +24,11 @@ end
 
 # AMQP.Queue.declare(channel, "task_queue")
 AMQP.Queue.declare(channel, "task_queue", durable: true)
+AMQP.Basic.qos(channel, prefetch_count: 1)
 
 # AMQP.Basic.consume(channel, "task_queue", nil, no_ack: true)
 AMQP.Basic.consume(channel, "task_queue", nil)
+
 
 IO.puts " [*] Waiting for messages. To exit press CTRL+C, CTRL+C"
 Worker.wait_for_messages(channel)
@@ -39,3 +41,6 @@ Worker.wait_for_messages(channel)
 # 위 문제를 해결해도, 여전히 RabbitMQ server가 멈췄을 때는 task가 없어진다.
 # queue와 message 모두에 durable을 표시해야 한다.
 # durable: true -> RabbitMQ가 restart되더라도 queue가 존재한다.
+
+# 여러 worker가 있고, 한 worker는 heavy message, 다른 worker는 light message만 받으면, 한 worker는 바쁘고, 한 worker는 일을 하지 않고 있는 문제가 생긴다.
+# AMQP.Basic.qos 함수에서 prefetch_count setting
