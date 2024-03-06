@@ -22,7 +22,7 @@ AMQP.Exchange.declare(channel, "logs", :fanout) # fanout : 모든 message를 모
 {:ok, %{queue: queue_name}} = AMQP.Queue.declare(channel, "", exclusive: true) # exclusive : consumer 연결이 끊기면, queue가 삭제됨.
 
 AMQP.Queue.bind(channel, queue_name, "logs") # binding: exchange와 queue 사이의 관계
-AMQP.Basic.consume(channel, queue_name, nil, no_ack: true)
+AMQP.Basic.consume(channel, queue_name, nil, no_ack: true) # RabbitMQ에 특정 process가 해당 queue에서 message를 받아야 한다는 것을 알림
 IO.puts " [*] Waiting for messages. To exit press CTRL+C, CTRL+C"
 
 ReceiveLogs.wait_for_messages(channel)
